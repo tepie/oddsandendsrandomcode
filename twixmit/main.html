@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>twixmit (swap the x with the last t for twitmix)</title>
+<link rel="stylesheet" href="static/960.css">
+</head>
+<body>
+    <header>
+        <div class="container_12">
+            <div class="logo grid_6" style="font-weight:bold;font-size:26px;">
+                <object data="/static/noun_project_296_1.svg" type="image/svg+xml" 
+                        style="width:20%;height:20%;float:left;padding-right: 10px;"></object>
+                <table>
+                    <tr><td>t</td><td>w</td><td>i</td><td>x</td><td>m</td><td>i</td><td>t</td></tr>
+                    <tr><td>_</td><td>_</td><td>_</td><td>^</td><td>_</td><td>_</td><td>^</td></tr>
+                </table>
+                <p>(swap the x with the last t for twitmix)</p>
+            </div>
+            <div class="about grid_6" style="font-weight:bold;font-size:14px;">
+                <p>twixmit will switch your twitter posts with someone elses and theirs as well. How to play? Authorize this site to read your posts
+                and post updates on your behalf. The posted update on your timeline will be randomly selected and will be the post someone else submitted
+                that is also participating.</p>
+                <p>Posts are made once a day GMT time. For ever post your mark to particpate your timeline will be updated that many times with someone else's
+                update. To mark your post include the hashtag <a href="https://twitter.com/#!/search/%23twixmit">&quot;#twixmit&quot;</a></p>
+            </div>
+        </div>
+    </header>
+    <section class="user">
+        <div class="container_16">
+            <div class="grid_2">&nbsp;</div>
+            {% if user %}
+                <div class="google grid_6">
+                    <!--
+                    <object data="/static/noun_project_efc6cb60-70b9-4263-bf0f-947913b1f483.svg" 
+                        type="image/svg+xml" style="width:20%;height:20%;float:left;padding-right: 10px;"></object>
+                    --!>
+                    <p class="youare">hello {{ user.nickname }}, <a href="{{ logout_url }}">sign out of google?</a></p>
+                </div>
+                
+                <div class="twitter grid_6">
+                {%if needs_twitter_auth %}
+                    <object data="/static/noun_project_554_1.svg" type="image/svg+xml" 
+                        style="height:20%;float:left;padding-right: 10px;"></object>
+                    <p class="twitterneeded">
+                    you've not authorized twixmit to use your twitter account, 
+                    <a href="{{redirect_url}}">click here</a> to do so!</a></p>
+                {% else %}
+                    <img class="twitterprofileimg" src="https://api.twitter.com/1/users/profile_image?screen_name={{twitter_user.screen_name}}&size=bigger" style="float:left;padding-right: 10px;" />
+                    <p class="twitterme">looks like you are &quot;{{twitter_user.screen_name }}&quot; on twitter!</p>
+                {% endif %}
+                </div>
+                
+            {% else %}
+                <div class="nobody grid_8">
+                <p>who are you? to play <a href="{{ login_url }}">sign into google!</a></p>
+                </div>
+            {% endif %}
+            <div class="grid_2">&nbsp;</div>
+        </div>
+    </section>
+    
+    <section class="posting">
+        <div class="container_12">
+            <div class="grid_2">&nbsp;</div>
+            <div class="grid_8">
+                <textarea placeholder="sample twitter post: I hope this gets posted on @twitter feed!" style="width: inherit;" maxlength="140"></textarea>
+                <br />
+                <span style="float:right"><button type="button">Click Me!</button></span>
+            </div>
+            <div class="grid_2">&nbsp;</div>
+        </div>
+    </section>
+    
+    <section class="current-round">
+       <div class="container_16">
+           <div class="grid_4">
+                <h4>your pending posts to be submitted</h4>
+           </div>
+           <div class="grid_4">
+                <h4>everyone else's pending posts</h4>
+           </div>
+           <div class="grid_4">
+                <h4>posts posted to your feed by others</h4>
+           </div>
+           <div class="grid_4">
+                <h4>your posts posted to others</h4>
+           </div>
+       </div>
+    <section>
+    
+    <footer>
+    </footer>
+    
+    <script type="text/javascript" src="/static/jquery-1.7.1.min.js"></script>
+</body> 
+</html>
