@@ -1,0 +1,41 @@
+img.logo{
+    float:left;
+    padding-right: 10px;
+}
+
+div.about {
+    font-weight:bold;
+    font-size:14px;
+}
+
+div.logo{
+    font-weight:bold;
+    font-size:26px;
+}
+
+div.nobody img{
+    float:left;
+    width:10%;
+    padding-right:10px;
+}
+
+div.logo p{
+    font-size:12px;
+}
+
+ul.posts{
+    list-style-type: none;
+    padding: 0px;
+}
+
+li.post-box {
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    padding-bottom: 8px;
+    padding-top: 2px;
+}
+
+li.post-box div.time{
+    font-size: 10px;
+    text-align: right;
+}   

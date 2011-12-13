@@ -3,25 +3,27 @@
 <head>
 <title>twixmit (swap the x with the last t for twitmix)</title>
 <link rel="stylesheet" href="static/960.css">
+<link rel="stylesheet" type="text/css" href="static/style.css" />
 </head>
 <body>
     <header>
         <div class="container_12">
-            <div class="logo grid_6" style="font-weight:bold;font-size:26px;">
-                <object data="/static/noun_project_296_1.svg" type="image/svg+xml" 
-                        style="width:20%;height:20%;float:left;padding-right: 10px;"></object>
+            <div class="logo grid_3">
+                <img src="/static/noun_project_296_1.png" alt="logo" />
+            </div>
+            <div class="logo grid_3">
                 <table>
                     <tr><td>t</td><td>w</td><td>i</td><td>x</td><td>m</td><td>i</td><td>t</td></tr>
                     <tr><td>_</td><td>_</td><td>_</td><td>^</td><td>_</td><td>_</td><td>^</td></tr>
                 </table>
-                <p style="font-size:12px;">(swap the x with the last t for twitmix)</p>
+                <p>(swap the x with the last t for twitmix)</p>
             </div>
-            <div class="about grid_6" style="font-weight:bold;font-size:14px;">
+            <div class="about grid_6">
                 <p>twixmit will switch your twitter posts with someone elses and theirs as well. How to play? Authorize this site to read your posts
                 and post updates on your behalf. The posted update on your timeline will be randomly selected and will be the post someone else submitted
                 that is also participating.</p>
-                <p>Posts are made once a day GMT time. For ever post your mark to particpate your timeline will be updated that many times with someone else's
-                update. To mark your post include the hashtag <a href="https://twitter.com/#!/search/%23twixmit">&quot;#twixmit&quot;</a></p>
+                <p>Posts are made once a day GMT time. Submit your post through this site to be used for mixing. See how things are mixed
+                and what gets posted where.</p>
             </div>
         </div>
     </header>
@@ -52,6 +54,7 @@
                 
             {% else %}
                 <div class="nobody grid_8">
+                <img src="/static/noun_project_554_1.png" />
                 <p>who are you? to play <a href="{{ login_url }}">sign into google!</a></p>
                 </div>
             {% endif %}
@@ -82,19 +85,19 @@
        <div class="container_16">
            <div class="grid_4">
                 <h4>your pending posts to be submitted</h4>
-                <ul id="yours-pending"></ul>
+                <ul class="posts" id="yours-pending"></ul>
            </div>
            <div class="grid_4">
                 <h4>everyone else's pending posts</h4>
-                <ul id="theirs-pending"></ul>
+                <ul class="posts" id="theirs-pending"></ul>
            </div>
            <div class="grid_4">
                 <h4>posts posted to your feed by others</h4>
-                <ul id="theirs-posted-toyou"></ul>
+                <ul class="posts" id="theirs-posted-toyou"></ul>
            </div>
            <div class="grid_4">
                 <h4>your posts posted to others</h4>
-                <ul id="yours-posted-totheirs"></ul>
+                <ul class="posts" id="yours-posted-totheirs"></ul>
            </div>
        </div>
     <section>
