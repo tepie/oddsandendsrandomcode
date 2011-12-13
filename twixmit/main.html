@@ -75,10 +75,10 @@
     </section>
     
     <section class="current-round">
-        <div class="post-box">
-            <div class="text" />
-            <div class="time" />
-        </div>
+        <li class="post-box" id="cloneme" style="display:none;">
+            <div class="text"></div>
+            <div class="time"></div>                
+        </li>
        <div class="container_16">
            <div class="grid_4">
                 <h4>your pending posts to be submitted</h4>
@@ -111,8 +111,44 @@
         window.textToSave = $("#text-to-save");
         window.postButton = $("button#post");
         
+        window.yoursPendingList = $("ul#yours-pending");
+        window.postBoxToClone = $("li#cloneme");
+        
         postButton.click(savePostForMix);
+        
+        loadYoursPending();
     });
+    
+    function setupPostLoadTimers(){
+    
+    }
+    
+    function loadYoursPending(){
+    
+        var options = {
+            dataType : "json",
+            data : {"which" : "yours-pending","since" : window.yoursPendingListCursor },
+            success : function(data, textStatus, jqXHR){
+                window.yoursPendingListCursor = data.c;
+                
+                for( result in data.r){
+                    var liDom = postBoxToClone.clone();
+                    liDom.children(".text").text(data.r[result].text);
+                    liDom.children(".time").text(data.r[result].created);
+                    liDom.removeAttr("id");
+                    liDom.show();
+                    liDom.prependTo(yoursPendingList);
+                }
+            },
+            error : function(jqXHR, textStatus, errorThrown){
+                console.error(errorThrown);                  
+            },
+            url : "/getposts",
+            type : "get"
+        };
+        
+        $.ajax(options);
+    }
     
     function savePostForMix(e){
         var options = {
