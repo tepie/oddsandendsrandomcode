@@ -14,7 +14,7 @@
                     <tr><td>t</td><td>w</td><td>i</td><td>x</td><td>m</td><td>i</td><td>t</td></tr>
                     <tr><td>_</td><td>_</td><td>_</td><td>^</td><td>_</td><td>_</td><td>^</td></tr>
                 </table>
-                <p>(swap the x with the last t for twitmix)</p>
+                <p style="font-size:12px;">(swap the x with the last t for twitmix)</p>
             </div>
             <div class="about grid_6" style="font-weight:bold;font-size:14px;">
                 <p>twixmit will switch your twitter posts with someone elses and theirs as well. How to play? Authorize this site to read your posts
@@ -59,13 +59,16 @@
         </div>
     </section>
     
+    {%if not needs_twitter_auth %}
+    
     <section class="posting">
         <div class="container_12">
             <div class="grid_2">&nbsp;</div>
             <div class="grid_8">
-                <textarea placeholder="sample twitter post: I hope this gets posted on @twitter feed!" style="width: inherit;" maxlength="140"></textarea>
+                <span id="save-results"></span>
+                <textarea id="text-to-save" placeholder="sample twitter post: I hope this gets posted on @twitter feed!" style="width: inherit;" maxlength="140"></textarea>
                 <br />
-                <span style="float:right"><button type="button">Click Me!</button></span>
+                <span style="float:right"><button type="button" id="post">Click Me!</button></span>
             </div>
             <div class="grid_2">&nbsp;</div>
         </div>
@@ -88,9 +91,55 @@
        </div>
     <section>
     
+    {% endif %} 
+    
     <footer>
     </footer>
     
     <script type="text/javascript" src="/static/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        window.saveResultsDom = $("#save-results");
+        window.textToSave = $("#text-to-save");
+        window.postButton = $("button#post");
+        
+        postButton.click(savePostForMix);
+    });
+    
+    function savePostForMix(e){
+        var options = {
+            dataType : "json",
+            data : {"text" : textToSave.val() },
+            success : function(data, textStatus, jqXHR){
+                    
+                if (data && data.success == true){
+                    saveResultsDom.css("color","green").css("font-weight","bold");
+                    saveResultsDom.text("Saved!");
+                } else if (data){
+                    saveResultsDom.css("color","red").css("font-weight","bold");
+                    saveResultsDom.text(data.failure_message);
+                } else {
+                    saveResultsDom.css("color","red").css("font-weight","bold");
+                    saveResultsDom.text(textStatus);
+                }
+            },
+            error : function(jqXHR, textStatus, errorThrown){
+                    saveResultsDom.css("color","red").css("font-weight","bold");
+                    saveResultsDom.text(errorThrown);
+            },
+            url : "/saveformix",
+            type : "post",
+            beforeSend : function(jqXHR, settings){
+                postButton.attr("disabled","disabled");
+            },
+            complete: function(jqXHR, textStatus){
+                postButton.removeAttr("disabled");
+            }
+        };
+        
+        $.ajax(options);
+    }
+    
+    </script>
 </body> 
 </html>

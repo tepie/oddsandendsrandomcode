@@ -10,6 +10,6 @@ class SocialKeysForUsers(db.Model):
     updated = db.DateTimeProperty(auto_now=True)
     
 class SocialPostsForUsers(db.Model):
-    user_id = db.StringProperty(required=True)
+    social_user = db.ReferenceProperty(SocialKeysForUsers,collection_name='social_user',required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     text = db.StringProperty(required=True)

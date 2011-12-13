@@ -22,11 +22,61 @@ from google.appengine.api import memcache
 
 import social_keys
 import model
-import os,logging
+import os,logging,json
 
 from tweepy.auth import OAuthHandler
 from tweepy.auth import API
 from tweepy.error import TweepError
+
+
+FAILURE_NO_USER_CODE = 1
+FAILURE_NO_USER_TEXT = "User is not setup"
+
+FAILURE_NO_TEXT_TO_SAVE_CODE = 2
+FAILURE_NO_TEXT_TO_SAVE_TEXT = "Text to save is not correct"
+
+class FailureJson(object):
+    def __init__(self,failure_key,failure_message):
+        self.failure_key = failure_key
+        self.failure_message = failure_message
+        
+    def get_json(self):
+        return json.dumps({"success" : False, "failure_key" : self.failure_key, "failure_message" : self.failure_message});
+
+class SavePostForMixHandler(webapp.RequestHandler):
+    
+    def get(self):
+        self.redirect("/")
+    
+    def post(self):
+        user = users.get_current_user()
+        
+        self.response.headers["Content-Type"] = "application/json"
+        
+        if user: 
+            social_users = model.SocialKeysForUsers.all()
+            social_users.filter("user_id =",user.user_id())
+            user_model = social_users.get()
+            
+            if user_model.access_token_key and user_model.access_token_secret:
+                text_to_save =self.request.get("text",  default_value=None)
+                
+                if not text_to_save == None and len(text_to_save) > 0:
+                    social_post = model.SocialPostsForUsers(social_user=user_model,text=text_to_save)
+                    social_post.put()
+                    
+                    self.response.out.write(json.dumps( { "success" : True }) )
+                    
+                else:
+                    fail = FailureJson(FAILURE_NO_TEXT_TO_SAVE_CODE,FAILURE_NO_TEXT_TO_SAVE_TEXT)
+                    self.response.out.write( fail.get_json() )
+                
+            else:
+                fail = FailureJson(FAILURE_NO_USER_CODE,FAILURE_NO_USER_TEXT)
+                self.response.out.write( fail.get_json() )
+        else:
+            fail = FailureJson(FAILURE_NO_USER_CODE,FAILURE_NO_USER_TEXT)
+            self.response.out.write( fail.get_json() )
 
 class MainHandler(webapp.RequestHandler):
     def get(self):
@@ -126,7 +176,7 @@ class CallbackHandler(webapp.RequestHandler):
         
         if not user: 
             logging.warning("current user is not logged in")
-            #self.redirect("/")
+            self.redirect("/")
         
         social_users = model.SocialKeysForUsers.all()
         social_users.filter("user_id =",user.user_id())
@@ -172,7 +222,8 @@ class CallbackHandler(webapp.RequestHandler):
 
 def main():
     application = webapp.WSGIApplication([('/', MainHandler),
-                                            ('/callback', CallbackHandler)],
+                                            ('/callback', CallbackHandler),
+                                            ('/saveformix',SavePostForMixHandler)],
                                          debug=True)
     util.run_wsgi_app(application)
 
