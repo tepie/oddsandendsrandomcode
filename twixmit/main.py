@@ -23,6 +23,7 @@ from google.appengine.api import memcache
 import social_keys
 import model
 import os,logging,json
+import datetime,time
 
 from tweepy.auth import OAuthHandler
 from tweepy.auth import API
@@ -35,6 +36,24 @@ FAILURE_NO_USER_TEXT = "User is not setup"
 FAILURE_NO_TEXT_TO_SAVE_CODE = 2
 FAILURE_NO_TEXT_TO_SAVE_TEXT = "Text to save is not correct"
 
+
+class Util(object):
+    
+    def is_user_good(self):
+        user = users.get_current_user()
+        if user:
+            social_users = model.SocialKeysForUsers.all()
+            social_users.filter("user_id =",user.user_id())
+            user_model = social_users.get()
+            
+            if user_model.access_token_key and user_model.access_token_secret:
+                return user_model
+            else:
+                return None
+        else:
+            return None
+    
+
 class FailureJson(object):
     def __init__(self,failure_key,failure_message):
         self.failure_key = failure_key
@@ -43,37 +62,81 @@ class FailureJson(object):
     def get_json(self):
         return json.dumps({"success" : False, "failure_key" : self.failure_key, "failure_message" : self.failure_message});
 
+
+class GetPostsHandler(webapp.RequestHandler):
+    def get(self): 
+    
+        util = Util()
+        user_model = util.is_user_good()
+    
+        if not user_model == None:
+            
+            _template_values = {}
+            
+            dt = datetime.datetime.fromtimestamp(time.time())
+            day_start = datetime.datetime(dt.year, dt.month, dt.day, hour=0,minute=0)
+            day_stop = datetime.datetime(dt.year, dt.month, dt.day, hour=23,minute=59,second=59,microsecond=999999)
+    
+            _template_values["day_start"] = day_start
+            _template_values["day_stop"] = day_stop
+    
+            get_which = self.request.get("which")
+            get_since = self.request.get("since")
+            
+            if get_which == "yours-pending":
+                
+                q = model.SocialPostsForUsers.all()
+                q.filter("social_user =",user_model)
+                q.filter("created <=",day_stop)
+                q.filter("created >=",day_start)
+                
+                if not get_since == None:
+                    q.with_cursor(get_since)
+                    
+                q.order("-created")
+                
+                results = q.fetch(100)
+                cursor = q.cursor()
+                
+                _template_values["c"] = cursor
+                _template_values["r"] = results
+                
+            else:
+                pass
+
+            _path = os.path.join(os.path.dirname(__file__), 'posts.html') 
+            self.response.headers["Content-Type"] = "application/json"
+            self.response.out.write(template.render(_path, _template_values))
+                
+        
+        else:
+            fail = FailureJson(FAILURE_NO_USER_CODE,FAILURE_NO_USER_TEXT)
+            self.response.out.write( fail.get_json() )
+
 class SavePostForMixHandler(webapp.RequestHandler):
     
     def get(self):
         self.redirect("/")
     
     def post(self):
-        user = users.get_current_user()
+        util = Util()
+        user_model = util.is_user_good()
         
         self.response.headers["Content-Type"] = "application/json"
         
-        if user: 
-            social_users = model.SocialKeysForUsers.all()
-            social_users.filter("user_id =",user.user_id())
-            user_model = social_users.get()
+        if not user_model == None:
+            text_to_save =self.request.get("text",  default_value=None)
             
-            if user_model.access_token_key and user_model.access_token_secret:
-                text_to_save =self.request.get("text",  default_value=None)
+            if not text_to_save == None and len(text_to_save) > 0 and len(text_to_save) < 140:
+                social_post = model.SocialPostsForUsers(social_user=user_model,text=text_to_save)
+                social_post.put()
                 
-                if not text_to_save == None and len(text_to_save) > 0:
-                    social_post = model.SocialPostsForUsers(social_user=user_model,text=text_to_save)
-                    social_post.put()
-                    
-                    self.response.out.write(json.dumps( { "success" : True }) )
-                    
-                else:
-                    fail = FailureJson(FAILURE_NO_TEXT_TO_SAVE_CODE,FAILURE_NO_TEXT_TO_SAVE_TEXT)
-                    self.response.out.write( fail.get_json() )
+                self.response.out.write(json.dumps( { "success" : True }) )
                 
             else:
-                fail = FailureJson(FAILURE_NO_USER_CODE,FAILURE_NO_USER_TEXT)
+                fail = FailureJson(FAILURE_NO_TEXT_TO_SAVE_CODE,FAILURE_NO_TEXT_TO_SAVE_TEXT)
                 self.response.out.write( fail.get_json() )
+            
         else:
             fail = FailureJson(FAILURE_NO_USER_CODE,FAILURE_NO_USER_TEXT)
             self.response.out.write( fail.get_json() )
@@ -223,7 +286,8 @@ class CallbackHandler(webapp.RequestHandler):
 def main():
     application = webapp.WSGIApplication([('/', MainHandler),
                                             ('/callback', CallbackHandler),
-                                            ('/saveformix',SavePostForMixHandler)],
+                                            ('/saveformix',SavePostForMixHandler),
+                                            ('/getposts',GetPostsHandler)],
                                          debug=True)
     util.run_wsgi_app(application)
 
