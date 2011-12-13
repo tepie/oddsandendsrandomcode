@@ -13,9 +13,13 @@ div.logo{
     font-size:26px;
 }
 
-div.nobody img{
+div.logo.icon {
+    text-align: right;
+}
+
+div.nobody img, div.twitter img, div.google img{
     float:left;
-    width:10%;
+    width: 10%;
     padding-right:10px;
 }
 
