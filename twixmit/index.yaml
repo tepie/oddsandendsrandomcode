@@ -12,6 +12,32 @@ indexes:
 
 - kind: SocialPostsForUsers
   properties:
+  - name: day_created
+  - name: social_user
+
+- kind: SocialPostsForUsers
+  properties:
+  - name: day_created
+  - name: social_user
+  - name: created
+    direction: desc
+
+- kind: SocialPostsForUsers
+  properties:
+  - name: day_created
+  - name: social_user
+    direction: desc
+
+- kind: SocialPostsForUsers
+  properties:
+  - name: day_created
+  - name: social_user
+    direction: desc
+  - name: created
+    direction: desc
+
+- kind: SocialPostsForUsers
+  properties:
   - name: social_user
   - name: created
     direction: desc

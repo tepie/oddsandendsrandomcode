@@ -2,6 +2,7 @@
 {% for post in r %}
     {"id" : "{{ post.key }}",
     "created" : "{{ post.created }}",
+    "by_user" : "",
     "text" : "{{ post.text }}" } {% if not forloop.last %},{% endif %}
 {% endfor %}
 ]}

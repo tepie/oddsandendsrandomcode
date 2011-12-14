@@ -52,6 +52,15 @@ class Util(object):
                 return None
         else:
             return None
+            
+    def get_twitter_user(self,api,user):
+        twitter_user = memcache.get("twitter_user:%s" % user.user_id())
+                        
+        if twitter_user == None:
+            twitter_user = api.me()
+            memcache.add("twitter_user:%s" % user.user_id(), twitter_user, 60)
+        
+        return twitter_user
     
 
 class FailureJson(object):
@@ -83,22 +92,29 @@ class GetPostsHandler(webapp.RequestHandler):
             get_which = self.request.get("which")
             get_since = self.request.get("since")
             
-            if get_which == "yours-pending":
-                
-                q = model.SocialPostsForUsers.all()
+            q = model.SocialPostsForUsers.all()
+            q.filter("day_created =",day_start)
+            
+            if not get_since == None:
+                q.with_cursor(get_since)
+            
+            if get_which == "yours-pending":               
                 q.filter("social_user =",user_model)
-                q.filter("created <=",day_stop)
-                q.filter("created >=",day_start)
-                
-                if not get_since == None:
-                    q.with_cursor(get_since)
-                    
                 q.order("-created")
-                
                 results = q.fetch(100)
                 cursor = q.cursor()
                 
                 _template_values["c"] = cursor
+                _template_values["r"] = results
+                
+            elif get_which == "theirs-pending":
+                q.filter("social_user !=",user_model)
+                q.order("-social_user")
+                q.order("-created")
+                results = q.fetch(100)
+                #cursor = q.cursor()
+                
+                _template_values["c"] = None
                 _template_values["r"] = results
                 
             else:
@@ -128,7 +144,9 @@ class SavePostForMixHandler(webapp.RequestHandler):
             text_to_save =self.request.get("text",  default_value=None)
             
             if not text_to_save == None and len(text_to_save) > 0 and len(text_to_save) < 140:
-                social_post = model.SocialPostsForUsers(social_user=user_model,text=text_to_save)
+                dt = datetime.datetime.fromtimestamp(time.time())
+                day_created = datetime.datetime(dt.year, dt.month, dt.day, hour=0,minute=0)
+                social_post = model.SocialPostsForUsers(social_user=user_model,text=text_to_save,day_created=day_created)
                 social_post.put()
                 
                 self.response.out.write(json.dumps( { "success" : True }) )

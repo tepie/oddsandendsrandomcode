@@ -11,5 +11,11 @@ class SocialKeysForUsers(db.Model):
     
 class SocialPostsForUsers(db.Model):
     social_user = db.ReferenceProperty(SocialKeysForUsers,collection_name='social_user',required=True)
+    day_created = db.DateTimeProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     text = db.StringProperty(required=True)
+    
+class SocialPostMixesForUsers(db.Model):
+    origin_post = db.ReferenceProperty(SocialPostsForUsers,collection_name='origin_post',required=True)
+    posted_to_user = db.ReferenceProperty(SocialKeysForUsers,collection_name='posted_to_user',required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
