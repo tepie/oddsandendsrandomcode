@@ -11,6 +11,13 @@ function twixmitMainReady(){
     
     loadYoursPending();
     loadTheirsPending();
+    
+    setTimeout("setupPostLoadTimers()",20000);
+}
+
+function setupPostLoadTimers(){
+    setInterval("loadYoursPending()",20000);
+    setInterval("loadTheirsPending()",20000);
 }
 
 function loadPostsAll(which,cursorWindowKey,prependToList,noPostsText){
@@ -18,7 +25,9 @@ function loadPostsAll(which,cursorWindowKey,prependToList,noPostsText){
         dataType : "json",
         data : {"which" : which ,"since" : window[cursorWindowKey] },
         success : function(data, textStatus, jqXHR){
-            window[cursorWindowKey] = data.c;
+            if (data.c != "None"){
+                window[cursorWindowKey] = data.c;
+            }
             
             if( data.r.length > 0){
                 for( result in data.r){
@@ -27,8 +36,8 @@ function loadPostsAll(which,cursorWindowKey,prependToList,noPostsText){
                     liDom.children(".time").text(data.r[result].created);
                     liDom.children(".by").text(data.r[result].by_user);
                     liDom.removeAttr("id");
-                    liDom.show();
                     liDom.prependTo(prependToList);
+                    liDom.fadeIn('slow');
                 }
             } else {
                 var liDom = postBoxToClone.clone();
@@ -65,6 +74,7 @@ function savePostForMix(e){
             if (data && data.success == true){
                 saveResultsDom.css("color","green").css("font-weight","bold");
                 saveResultsDom.text("Saved!");
+                textToSave.val("");
             } else if (data){
                 saveResultsDom.css("color","red").css("font-weight","bold");
                 saveResultsDom.text(data.failure_message);
