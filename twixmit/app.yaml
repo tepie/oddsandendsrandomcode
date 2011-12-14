@@ -4,6 +4,10 @@ runtime: python
 api_version: 1
 
 handlers:
+- url: /tasks/dailymix
+  script: dailymix.py
+  login: admin
+
 - url: /favicon\.ico
   static_files: static/noun_project_296_1.png
   upload: static/noun_project_296_1.png

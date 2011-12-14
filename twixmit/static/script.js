@@ -12,12 +12,12 @@ function twixmitMainReady(){
     loadYoursPending();
     loadTheirsPending();
     
-    setTimeout("setupPostLoadTimers()",20000);
+    setupPostLoadTimers();
 }
 
 function setupPostLoadTimers(){
-    setInterval("loadYoursPending()",20000);
-    setInterval("loadTheirsPending()",20000);
+    setInterval("loadYoursPending()",30000);
+    setInterval("loadTheirsPending()",30000);
 }
 
 function loadPostsAll(which,cursorWindowKey,prependToList,noPostsText){
