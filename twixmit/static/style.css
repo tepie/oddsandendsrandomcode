@@ -39,7 +39,7 @@ li.post-box {
     padding-top: 2px;
 }
 
-li.post-box div.time{
+li.post-box div.time, li.post-box div.by{
     font-size: 10px;
     text-align: right;
 }   

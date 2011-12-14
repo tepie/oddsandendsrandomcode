@@ -109,7 +109,9 @@
     <script type="text/javascript" src="/static/script.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {
+        {%if not needs_twitter_auth %}
         twixmitMainReady();
+        {% endif %}
     });
     
     function setupPostLoadTimers(){

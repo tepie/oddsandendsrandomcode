@@ -5,6 +5,7 @@ class SocialKeysForUsers(db.Model):
     access_token_key = db.StringProperty()
     access_token_secret = db.StringProperty()
     request_token_key = db.StringProperty()
+    shortcut_social_username = db.StringProperty()
     request_token_secret = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)

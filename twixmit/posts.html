@@ -2,7 +2,7 @@
 {% for post in r %}
     {"id" : "{{ post.key }}",
     "created" : "{{ post.created }}",
-    "by_user" : "",
+    "by_user" : "{{post.social_user.shortcut_social_username}}",
     "text" : "{{ post.text }}" } {% if not forloop.last %},{% endif %}
 {% endfor %}
 ]}

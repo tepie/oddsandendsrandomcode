@@ -25,6 +25,7 @@ function loadPostsAll(which,cursorWindowKey,prependToList,noPostsText){
                     var liDom = postBoxToClone.clone();
                     liDom.children(".text").text(data.r[result].text);
                     liDom.children(".time").text(data.r[result].created);
+                    liDom.children(".by").text(data.r[result].by_user);
                     liDom.removeAttr("id");
                     liDom.show();
                     liDom.prependTo(prependToList);

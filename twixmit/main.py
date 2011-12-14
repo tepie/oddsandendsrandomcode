@@ -123,8 +123,7 @@ class GetPostsHandler(webapp.RequestHandler):
             _path = os.path.join(os.path.dirname(__file__), 'posts.html') 
             self.response.headers["Content-Type"] = "application/json"
             self.response.out.write(template.render(_path, _template_values))
-                
-        
+            
         else:
             fail = FailureJson(FAILURE_NO_USER_CODE,FAILURE_NO_USER_TEXT)
             self.response.out.write( fail.get_json() )
@@ -273,11 +272,13 @@ class CallbackHandler(webapp.RequestHandler):
             user_model.access_token_key = auth.access_token.key
             user_model.access_token_secret = auth.access_token.secret
             
-            user_model.put()
-            
             api = API(auth)
             api_is_working = api.test()
-                
+            
+            user_model.shortcut_social_username = api.me().screen_name
+            
+            user_model.put()
+            
             self.response.out.write("twitter api is working?: %s\n" % api_is_working)
             
             try:
