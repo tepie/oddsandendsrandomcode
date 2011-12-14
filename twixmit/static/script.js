@@ -40,10 +40,13 @@ function loadPostsAll(which,cursorWindowKey,prependToList,noPostsText){
                     liDom.fadeIn('slow');
                 }
             } else {
-                var liDom = postBoxToClone.clone();
-                liDom.children(".text").text(noPostsText);
-                liDom.show();
-                liDom.prependTo(prependToList);
+                
+                if(prependToList.children().length == 0){
+                    var liDom = postBoxToClone.clone();
+                    liDom.children(".text").text(noPostsText);
+                    liDom.show();
+                    liDom.prependTo(prependToList);
+                }
             }
         },
         error : function(jqXHR, textStatus, errorThrown){

@@ -100,7 +100,7 @@ class GetPostsHandler(webapp.RequestHandler):
             
             if get_which == "yours-pending":               
                 q.filter("social_user =",user_model)
-                q.order("-created")
+                q.order("created")
                 results = q.fetch(100)
                 cursor = q.cursor()
                 
@@ -108,13 +108,11 @@ class GetPostsHandler(webapp.RequestHandler):
                 _template_values["r"] = results
                 
             elif get_which == "theirs-pending":
-                q.filter("social_user !=",user_model)
-                q.order("-social_user")
-                q.order("-created")
+                q.order("created")
                 results = q.fetch(100)
-                #cursor = q.cursor()
+                cursor = q.cursor()
                 
-                _template_values["c"] = None
+                _template_values["c"] = cursor
                 _template_values["r"] = results
                 
             else:
