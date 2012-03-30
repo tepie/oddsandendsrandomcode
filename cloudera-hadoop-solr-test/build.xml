@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="hadoop-solr" default="compile" basedir=".">
+	<property name="project" value="hadoop-solr"/>
+    <property name="dir.root" value="."/>
+    <property name="dir.src" value="src"/>
+    <property name="dir.build" value="build"/>
+	<property name="dir.dist" value="dist"/>
+    
+	<!--
+	hadoop jar hadoop-solr.jar -libjars /opt/apache-solr-3.5.0/dist/apache-solr-solrj-3.5.0.jar shakespeare/comedies shakespeare_output
+	-->
+	
+	<!-- Build the project classpath -->
+    <path id="project.class.path">
+		<pathelement path="/opt/apache-solr-3.5.0/dist/apache-solr-solrj-3.5.0.jar"/>
+		<pathelement path="/usr/lib/hadoop/hadoop-core.jar"/>
+    	<fileset dir="/usr/lib/hadoop/lib">
+    	</fileset>
+
+    </path>
+
+    <!-- Creates the output directories -->
+    <target name="prepare">
+        <mkdir dir="${dir.build}"/>
+        <mkdir dir="${dir.dist}"/>
+    </target>
+
+    <!-- Removes the build and dist directories. -->
+    <target name="clean" description="Remove all generated files.">
+        <delete dir="${dir.build}"/>
+    </target>
+
+    <!-- Compile all source code to the build directory. -->
+    <target name="compile" depends="clean,prepare" description="Compile all source code.">
+        <javac srcdir="${dir.src}" destdir="${dir.build}" fork="yes">
+        	<classpath refid="project.class.path"/>
+        </javac>
+    </target>
+
+    <!-- Creates an executable jar file in the dist directory. -->
+    <target name="jar" depends="compile" description="Generates filesink-bin.jar to'dist' directory.">
+        <mkdir dir="${dir.dist}"/>
+		<jar jarfile="${dir.dist}/hadoop-solr.jar" 
+			basedir="${dir.build}">
+			<manifest>
+                <attribute name="Main-Class" value="IndexDriver"/>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Sealed" value="false"/>
+			</manifest>
+        </jar> 
+    </target>
+
+
+</project>

@@ -1,0 +1,8 @@
+http://www.cloudera.com/blog/2009/04/configuring-eclipse-for-hadoop-development-a-screencast/
+http://www.cloudera.com/blog/2012/03/indexing-files-via-solr-and-java-mapreduce/
+http://www.cloudera.com/blog/2009/03/database-access-with-hadoop/
+
+http://hadoop.apache.org/common/docs/current/api/org/apache/hadoop/mapred/InputFormat.html
+http://wiki.apache.org/hadoop/EclipseEnvironment
+http://wiki.apache.org/hadoop/EclipseEnvironment
+http://hadoop.apache.org/common/docs/current/api/org/apache/hadoop/mapred/lib/db/DBInputFormat.html
