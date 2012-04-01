@@ -6,3 +6,18 @@ http://hadoop.apache.org/common/docs/current/api/org/apache/hadoop/mapred/InputF
 http://wiki.apache.org/hadoop/EclipseEnvironment
 http://wiki.apache.org/hadoop/EclipseEnvironment
 http://hadoop.apache.org/common/docs/current/api/org/apache/hadoop/mapred/lib/db/DBInputFormat.html
+
+http://wiki.apache.org/hadoop/EclipsePlugIn
+https://issues.apache.org/jira/browse/MAPREDUCE-1262
+http://code.google.com/p/hadoop-eclipse-plugin/downloads/detail?name=hadoop-0.20.1-eclipse-plugin.jar&can=2&q=
+
+http://developer.yahoo.com/hadoop/tutorial/module5.html
+http://developer.yahoo.com/hadoop/tutorial/index.html
+
+You can access status through the browser at the following URLs:
+
+NameNode status (localhost:50070)
+JobTracker status (localhost:50030)
+The Hue user interface (localhost:8088)
+The HBase web UI (localhost:60010)
+
