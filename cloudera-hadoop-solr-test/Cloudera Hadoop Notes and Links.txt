@@ -14,6 +14,11 @@ http://code.google.com/p/hadoop-eclipse-plugin/downloads/detail?name=hadoop-0.20
 http://developer.yahoo.com/hadoop/tutorial/module5.html
 http://developer.yahoo.com/hadoop/tutorial/index.html
 
+http://archive.cloudera.com/cdh/3/mahout-0.5-cdh3u3/mahout-examples/index.html?org/apache/mahout/classifier/bayes/XmlInputFormat.XmlRecordReader.html
+https://github.com/apache/mahout/blob/ad84344e4055b1e6adff5779339a33fa29e1265d/examples/src/main/java/org/apache/mahout/classifier/bayes/XmlInputFormat.java
+http://oobaloo.co.uk/articles/2010/1/20/processing-xml-in-hadoop.html
+
+
 You can access status through the browser at the following URLs:
 
 NameNode status (localhost:50070)
