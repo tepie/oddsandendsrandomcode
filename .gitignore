@@ -6,3 +6,5 @@
 twixmit/social_keys.py
 
 cloudera-hadoop-solr-test/dist/hadoop-solr.jar
+
+targetable/report.html

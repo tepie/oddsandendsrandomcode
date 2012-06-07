@@ -26,8 +26,8 @@ if __name__ == '__main__':
         
         env = re.split("\.",env)[-2] 
         
-        sys.stdout.write("%s\n" % (env))
-        sys.stdout.write("%s\n" % (file_minus))
+        #sys.stdout.write("%s\n" % (env))
+        #sys.stdout.write("%s\n" % (file_minus))
         
         if not env_groups.has_key(env):
             env_groups[env] = []
@@ -42,12 +42,13 @@ if __name__ == '__main__':
     file_groups_details = {}
     
     for k,v in file_groups.iteritems():
-        sys.stdout.write("%s, %s\n" % (k,v))
+        sys.stderr.write("%s, %s\n" % (k,v))
         
         if not file_groups_details.has_key(k):
             file_groups_details[k] = {}
         
         file_groups_details[k]["file_list_length"] = len(v)
+        file_groups_details[k]["file_differences"] = []
         
         last_file_content = None
         last_file_name = None   
@@ -60,9 +61,34 @@ if __name__ == '__main__':
             file_groups_details[k][file] = content
             
             if not last_file_content == None:
-                for line in difflib.unified_diff(last_file_content, content, fromfile=last_file_name, tofile=file):
-                    sys.stdout.write(line)  
-                
-            last_file_content = content
-            last_file_name = file
+                #for line in difflib.unified_diff(last_file_content, content, fromfile='', tofile=file):
+                #    sys.stdout.write(line)  
+                diff = difflib.HtmlDiff(wrapcolumn=60).make_file(last_file_content,content,fromdesc=last_file_name, todesc=re.split("/",file)[-1],context=True)
+                file_groups_details[k]["file_differences"].append(diff)
+                #sys.stdout.write(diff)
             
+            #sys.stdout.write("\n===========\n")
+            
+            last_file_content = content
+            basename = re.split("/",file)[-1]
+            last_file_name = basename
+    
+    sys.stdout.write('''<html><head>
+    <style type="text/css">
+        table.diff {font-family:Courier; border:medium;}
+        .diff_header {background-color:#e0e0e0}
+        td.diff_header {text-align:right}
+        .diff_next {background-color:#c0c0c0}
+        .diff_add {background-color:#aaffaa}
+        .diff_chg {background-color:#ffff77}
+        .diff_sub {background-color:#ffaaaa}
+    </style>
+</head>
+<body>''')
+    
+    for k in file_groups_details.keys():
+        sys.stdout.write("<h1>%s</h1>" % k)
+        for diff in file_groups_details[k]["file_differences"]:
+            sys.stdout.write(diff)
+            
+    sys.stdout.write("</body></html>")
