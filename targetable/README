@@ -1,0 +1,2 @@
+find ~/vm_share/Bealls_SVN/bpswscvsa01_svn_branch_3.00/ -name "*targetable*" | python ihatetargetablefiles.py
+find ./workspace -name "*targetable*" | python ihatetargetablefiles.py
