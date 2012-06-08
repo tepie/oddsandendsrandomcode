@@ -2,13 +2,12 @@
 
 import os,sys,re,difflib
 
-if __name__ == '__main__':
-    
-    stdin_targetables = sys.stdin.readlines()
-    
-    env_groups = {}
-    file_groups = {}
-    
+env_groups = {}
+file_groups = {}
+file_groups_details = {}
+
+def read_targetables(targetables):
+
     for targetable in stdin_targetables:
         #sys.stdout.write("%s" % targetable)
         
@@ -38,9 +37,7 @@ if __name__ == '__main__':
         env_groups[env].append(targetable)
         file_groups[file_minus].append(targetable)
         
-    
-    file_groups_details = {}
-    
+def lookat_targetables(diff_html=False):
     for k,v in file_groups.iteritems():
         sys.stderr.write("%s, %s\n" % (k,v))
         
@@ -63,8 +60,12 @@ if __name__ == '__main__':
             if not last_file_content == None:
                 #for line in difflib.unified_diff(last_file_content, content, fromfile='', tofile=file):
                 #    sys.stdout.write(line)  
-                diff = difflib.HtmlDiff(wrapcolumn=60).make_file(last_file_content,content,fromdesc=last_file_name, todesc=re.split("/",file)[-1],context=True)
+                if diff_html:
+                    diff = difflib.HtmlDiff(wrapcolumn=60).make_file(last_file_content,content,fromdesc=last_file_name, todesc=re.split("/",file)[-1],context=True)
+                else:
+                    diff = difflib.unified_diff(last_file_content, content, fromfile=last_file_name, tofile=re.split("/",file)[-1])
                 file_groups_details[k]["file_differences"].append(diff)
+                    
                 #sys.stdout.write(diff)
             
             #sys.stdout.write("\n===========\n")
@@ -72,7 +73,8 @@ if __name__ == '__main__':
             last_file_content = content
             basename = re.split("/",file)[-1]
             last_file_name = basename
-    
+            
+def outputhtml_targetables():
     sys.stdout.write('''<html><head>
     <style type="text/css">
         table.diff {font-family:Courier; border:medium;}
@@ -92,3 +94,21 @@ if __name__ == '__main__':
             sys.stdout.write(diff)
             
     sys.stdout.write("</body></html>")
+
+if __name__ == '__main__':
+    
+    stdin_targetables = sys.stdin.readlines()
+    
+    read_targetables(stdin_targetables)
+    
+    lookat_targetables(diff_html=True)
+    
+    outputhtml_targetables()
+    
+    
+    
+
+    
+    
+    
+    
