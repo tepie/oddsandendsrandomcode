@@ -3,10 +3,11 @@
 import os,sys,re,difflib
 import env_mapkeys
 
-env_groups = {}
+#env_groups = {}
 file_groups = {}
 file_groups_details = {}
 file_contents_perenv = {}
+file_diffs_perenv = []
 
 def read_targetables(targetables):
 
@@ -30,13 +31,13 @@ def read_targetables(targetables):
         #sys.stdout.write("%s\n" % (env))
         #sys.stdout.write("%s\n" % (file_minus))
         
-        if not env_groups.has_key(env):
-            env_groups[env] = []
+        #if not env_groups.has_key(env):
+        #    env_groups[env] = []
             
         if not file_groups.has_key(file_minus):
             file_groups[file_minus] = []
             
-        env_groups[env].append(targetable)
+        #env_groups[env].append(targetable)
         file_groups[file_minus].append(targetable)
         
 def readcontentof_targetables():
@@ -89,71 +90,41 @@ def organize_targetable_content():
                 
                 left_contents = a_files[af]
                 right_contents = b_files[sub_env]
+                
+                #diff = difflib.unified_diff(left_contents, left_contents, fromfile=af, tofile=sub_env)
+                diff = difflib.HtmlDiff(wrapcolumn=80).make_table(left_contents,right_contents,fromdesc=af, todesc=sub_env,context=True)
+                
+                file_diffs_perenv.append(diff)
             
             sys.stderr.write("%s \n" % (a_files.keys() )) 
         except KeyError, e:
             sys.stderr.write("environment mapping missing completely for %s\n" % (a))
+            file_diffs_perenv.append("<h1>environment mapping missing completely for %s</h1>\n" % (a))
 
-def lookat_targetables(diff_html=False):
-    for k,v in file_groups.iteritems():
-        sys.stderr.write("%s, %s\n" % (k,v))
-        
-        if not file_groups_details.has_key(k):
-            file_groups_details[k] = {}
-        
-        file_groups_details[k]["file_list_length"] = len(v)
-        file_groups_details[k]["file_differences"] = []
-        
-        last_file_content = None
-        last_file_name = None   
-        
-        for file in v:
-            f = open(file, 'r')
-            content = f.readlines()
-            f.close()
-            
-            file_groups_details[k][file] = content
-            
-            if not last_file_content == None:
-                if diff_html:
-                    diff = difflib.HtmlDiff(wrapcolumn=60).make_file(last_file_content,content,fromdesc=last_file_name, todesc=re.split("/",file)[-1],context=True)
-                else:
-                    diff = difflib.unified_diff(last_file_content, content, fromfile=last_file_name, tofile=re.split("/",file)[-1])
-                file_groups_details[k]["file_differences"].append(diff)
-                    
-            last_file_content = content
-            basename = re.split("/",file)[-1]
-            last_file_name = basename
-            
-def outputhtml_targetables():
+
+def outputdiff_ashtml():
     sys.stdout.write('''<html><head>
-    <style type="text/css">
-        table.diff {font-family:Courier; border:medium;}
-        .diff_header {background-color:#e0e0e0}
-        td.diff_header {text-align:right}
-        .diff_next {background-color:#c0c0c0}
-        .diff_add {background-color:#aaffaa}
-        .diff_chg {background-color:#ffff77}
-        .diff_sub {background-color:#ffaaaa}
-    </style>
-</head>
-<body>''')
+        <style type="text/css">
+            table.diff {font-family:Courier; border:medium;}
+            .diff_header {background-color:#e0e0e0}
+            td.diff_header {text-align:right}
+            .diff_next {background-color:#c0c0c0}
+            .diff_add {background-color:#aaffaa}
+            .diff_chg {background-color:#ffff77}
+            .diff_sub {background-color:#ffaaaa}
+            
+            * {font-size: small};
+        </style>
+    </head>
+    <body>''')
     
-    for k in file_groups_details.keys():
-        sys.stdout.write("<h1>%s</h1>" % k)
-        for diff in file_groups_details[k]["file_differences"]:
-            sys.stdout.write(diff)
+    for diff in file_diffs_perenv:
+        for line in diff:
+            sys.stdout.write(line)
+            
+        sys.stdout.write("<br /><br />")
             
     sys.stdout.write("</body></html>")
-
-def outputraw_targetables():
-     for k in file_groups_details.keys():
-        sys.stdout.write("%s\n" % k)
-        for diff in file_groups_details[k]["file_differences"]:
-            for line in diff:
-                #sys.stdout.write(line)
-                pass
-
 
 if __name__ == '__main__':
     
@@ -165,9 +136,7 @@ if __name__ == '__main__':
     
     organize_targetable_content()
     
-    #lookat_targetables(diff_html=False)
-    #outputhtml_targetables()
-    #outputraw_targetables()
+    outputdiff_ashtml()
     
     
     
