@@ -5,6 +5,7 @@ import os,sys,re,difflib
 env_groups = {}
 file_groups = {}
 file_groups_details = {}
+file_contents_perenv = {}
 
 def read_targetables(targetables):
 
@@ -37,6 +38,43 @@ def read_targetables(targetables):
         env_groups[env].append(targetable)
         file_groups[file_minus].append(targetable)
         
+def readcontentof_targetables():
+    for k,v in file_groups.iteritems():
+        #sys.stderr.write("%s, %s\n" % (k,v))
+        
+        if not file_groups_details.has_key(k):
+            file_groups_details[k] = {}
+        
+        #file_groups_details[k]["file_list_length"] = len(v)
+        #file_groups_details[k]["file_differences"] = []
+        
+        last_file_content = None
+        last_file_name = None   
+        
+        for file in v:
+            f = open(file, 'r')
+            content = f.readlines()
+            f.close()
+            
+            basename = re.split("/",file)[-1]
+            mtch_obj = re.search("\.targetable\.\S+\.",basename)
+
+            env = basename[mtch_obj.start():mtch_obj.end()]
+            
+            env = re.sub("\.targetable\.","",env)
+            env = env[:-1]
+            
+            if not file_contents_perenv.has_key(env):
+                file_contents_perenv[env] = {}
+            
+            file_contents_perenv[env][basename] = content
+            
+def organize_targetable_content():
+    
+    for k,v in file_contents_perenv.iteritems():
+        sys.stderr.write("%s --> %s\n" % (k,v.keys() ))  
+        pass
+
 def lookat_targetables(diff_html=False):
     for k,v in file_groups.iteritems():
         sys.stderr.write("%s, %s\n" % (k,v))
@@ -58,18 +96,12 @@ def lookat_targetables(diff_html=False):
             file_groups_details[k][file] = content
             
             if not last_file_content == None:
-                #for line in difflib.unified_diff(last_file_content, content, fromfile='', tofile=file):
-                #    sys.stdout.write(line)  
                 if diff_html:
                     diff = difflib.HtmlDiff(wrapcolumn=60).make_file(last_file_content,content,fromdesc=last_file_name, todesc=re.split("/",file)[-1],context=True)
                 else:
                     diff = difflib.unified_diff(last_file_content, content, fromfile=last_file_name, tofile=re.split("/",file)[-1])
                 file_groups_details[k]["file_differences"].append(diff)
                     
-                #sys.stdout.write(diff)
-            
-            #sys.stdout.write("\n===========\n")
-            
             last_file_content = content
             basename = re.split("/",file)[-1]
             last_file_name = basename
@@ -95,15 +127,28 @@ def outputhtml_targetables():
             
     sys.stdout.write("</body></html>")
 
+def outputraw_targetables():
+     for k in file_groups_details.keys():
+        sys.stdout.write("%s\n" % k)
+        for diff in file_groups_details[k]["file_differences"]:
+            for line in diff:
+                #sys.stdout.write(line)
+                pass
+
+
 if __name__ == '__main__':
     
     stdin_targetables = sys.stdin.readlines()
     
     read_targetables(stdin_targetables)
     
-    lookat_targetables(diff_html=True)
+    readcontentof_targetables()
     
-    outputhtml_targetables()
+    organize_targetable_content()
+    
+    #lookat_targetables(diff_html=False)
+    #outputhtml_targetables()
+    #outputraw_targetables()
     
     
     
