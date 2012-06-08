@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os,sys,re,difflib
+import env_mapkeys
 
 env_groups = {}
 file_groups = {}
@@ -73,7 +74,25 @@ def organize_targetable_content():
     
     for k,v in file_contents_perenv.iteritems():
         sys.stderr.write("%s --> %s\n" % (k,v.keys() ))  
-        pass
+        
+    for a in env_mapkeys.ENV_MAPKEYS.keys():
+        try:
+            b = env_mapkeys.ENV_MAPKEYS[a]
+            sys.stderr.write("%s --> %s\n" % (a,b ))  
+            
+            a_files = file_contents_perenv[a]
+            b_files = file_contents_perenv[b]
+            
+            for af in a_files.keys():
+                sub_env = re.sub("\.%s\." % a,".%s." % b, af)
+                sys.stderr.write("%s --> %s \n" % (af,sub_env))  
+                
+                left_contents = a_files[af]
+                right_contents = b_files[sub_env]
+            
+            sys.stderr.write("%s \n" % (a_files.keys() )) 
+        except KeyError, e:
+            sys.stderr.write("environment mapping missing completely for %s\n" % (a))
 
 def lookat_targetables(diff_html=False):
     for k,v in file_groups.iteritems():
