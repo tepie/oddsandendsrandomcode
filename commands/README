@@ -1,0 +1,19 @@
+
+curlftpfs -o allow_other ftp://user:password@ftp.site.net /mnt/locations
+
+sudo rsync -avhc --exclude=.git <src> <dest>
+
+python -m SimpleHTTPServer 8000
+
+rep -R \$\{*.\.*.\} --exclude="*\.svn*" --include=*.jsp* * | grep -v c\\:out | grep -v c\\:set | grep -v c\\:when | grep -v c\\:if | grep -v c\\:forEach | grep -v c\\:param | grep -v fmt\\: | grep -v c\\:import | grep -v jspStoreDir | grep -v pageContext | grep -v svn | less 
+
+openssl enc -aes-256-cbc -a -salt -in cv\ log.txt -out cv\ log.txt.encrypted
+openssl enc -d -aes-256-cbc -a -in cv\ log.txt.encrypted
+
+sftp domain\\windowsusers@sftp.site.com
+
+split -a 3 -b 1073741824 largfile.7z largfile.7z.
+
+curl -b cookies -k -L "http://192.168.51.128/webapp/wcs/stores/Logon?storeId=10151&catalogId=10051&langId=-1&logonId=wcsadmin&logonPassword=passw0rd1&URL=SitemapGenerate%3FsitemapView%3DDefaultSitemapView%26uploadXMLToEAR%3Dtrue%26compareFiles%3Dfalse%26storeType%3DCPS%26storeId%3D10051&reLogonURL=FailureView"
+
+ps aux | grep "Remote Desktop" | grep -v 'grep' | awk -F ' ' '{print $2}' | xargs kill
