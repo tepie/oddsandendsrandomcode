@@ -17,3 +17,7 @@ split -a 3 -b 1073741824 largfile.7z largfile.7z.
 curl -b cookies -k -L "http://192.168.51.128/webapp/wcs/stores/Logon?storeId=10151&catalogId=10051&langId=-1&logonId=wcsadmin&logonPassword=passw0rd1&URL=SitemapGenerate%3FsitemapView%3DDefaultSitemapView%26uploadXMLToEAR%3Dtrue%26compareFiles%3Dfalse%26storeType%3DCPS%26storeId%3D10051&reLogonURL=FailureView"
 
 ps aux | grep "Remote Desktop" | grep -v 'grep' | awk -F ' ' '{print $2}' | xargs kill
+
+db2 connect to cve user db2inst1 using db2@inst1
+db2 -f C:\file.sql -t
+EXPORT TO "20120328_orders.del" OF DEL select * from orders where timeplaced between '2012-03-28 00:00:00.000' and '2012-03-28 11:59:59.999';
