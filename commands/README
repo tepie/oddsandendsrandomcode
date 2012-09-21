@@ -5,7 +5,7 @@ sudo rsync -avhc --exclude=.git <src> <dest>
 
 python -m SimpleHTTPServer 8000
 
-rep -R \$\{*.\.*.\} --exclude="*\.svn*" --include=*.jsp* * | grep -v c\\:out | grep -v c\\:set | grep -v c\\:when | grep -v c\\:if | grep -v c\\:forEach | grep -v c\\:param | grep -v fmt\\: | grep -v c\\:import | grep -v jspStoreDir | grep -v pageContext | grep -v svn | less 
+grep -R \$\{*.\.*.\} --exclude="*\.svn*" --include=*.jsp* * | grep -v c\\:out | grep -v c\\:set | grep -v c\\:when | grep -v c\\:if | grep -v c\\:forEach | grep -v c\\:param | grep -v fmt\\: | grep -v c\\:import | grep -v jspStoreDir | grep -v pageContext | grep -v svn | less 
 
 openssl enc -aes-256-cbc -a -salt -in cv\ log.txt -out cv\ log.txt.encrypted
 openssl enc -d -aes-256-cbc -a -in cv\ log.txt.encrypted
@@ -32,4 +32,15 @@ diff -rupNqb -x .svn  trunk/workspace/WC/properties/ trunk_win7/workspace/WC/pro
 diff -rupNqb -x .svn  trunk/workspace/WC/META-INF/ trunk_win7/workspace/WC/META-INF/
 
 svn merge --force  https://host/svn/branches/3.00_xp 3.01_xp
+
+select s.* from calcode as d, calrule as r, crulescale as e, calscale as s, calrange as l , calrlookup as k
+    where d.storeent_id = 13001 
+    and d.calusage_id in (-3,-4)
+    and r.calcode_id = d.calcode_id
+    and e.calrule_id = r.calrule_id
+    and e.calscale_id = s.calscale_id
+    and l.calscale_id = s.calscale_id
+    and k.calrange_id = l.calrange_id
+    
+find . -size +5120k -exec ls -l {} \;
 
