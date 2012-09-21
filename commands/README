@@ -21,3 +21,15 @@ ps aux | grep "Remote Desktop" | grep -v 'grep' | awk -F ' ' '{print $2}' | xarg
 db2 connect to cve user db2inst1 using db2@inst1
 db2 -f C:\file.sql -t
 EXPORT TO "20120328_orders.del" OF DEL select * from orders where timeplaced between '2012-03-28 00:00:00.000' and '2012-03-28 11:59:59.999';
+
+db2 REORGCHK UPDATE STATISTICS on SCHEMA db2inst1
+db2advis -d cve -n db2inst1 -a db2inst1 -x -s "select LAT,LONG from db2inst1.x_geocodes where zip='34741'"
+
+diff -rupN -x .svn 2.02.3/ trunk/ 
+diff -rupN -x .svn 3.00_xp/ 3.01_xp/ 
+diff -rupNqb -x .svn  trunk/workspace/WC/xml/ trunk_win7/workspace/WC/xml/
+diff -rupNqb -x .svn  trunk/workspace/WC/properties/ trunk_win7/workspace/WC/properties/
+diff -rupNqb -x .svn  trunk/workspace/WC/META-INF/ trunk_win7/workspace/WC/META-INF/
+
+svn merge --force  https://host/svn/branches/3.00_xp 3.01_xp
+

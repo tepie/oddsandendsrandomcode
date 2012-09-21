@@ -77,29 +77,34 @@ def organize_targetable_content():
         sys.stderr.write("%s --> %s\n" % (k,v.keys() ))  
         
     for a in env_mapkeys.ENV_MAPKEYS.keys():
-        try:
-            b = env_mapkeys.ENV_MAPKEYS[a]
-            sys.stderr.write("%s --> %s\n" % (a,b ))  
-            
-            a_files = file_contents_perenv[a]
-            b_files = file_contents_perenv[b]
-            
-            for af in a_files.keys():
-                sub_env = re.sub("\.%s\." % a,".%s." % b, af)
-                sys.stderr.write("%s --> %s \n" % (af,sub_env))  
-                
-                left_contents = a_files[af]
-                right_contents = b_files[sub_env]
-                
-                #diff = difflib.unified_diff(left_contents, left_contents, fromfile=af, tofile=sub_env)
-                diff = difflib.HtmlDiff(wrapcolumn=80).make_table(left_contents,right_contents,fromdesc=af, todesc=sub_env,context=True)
-                
-                file_diffs_perenv.append(diff)
-            
-            sys.stderr.write("%s \n" % (a_files.keys() )) 
-        except KeyError, e:
-            sys.stderr.write("environment mapping missing completely for %s\n" % (a))
-            file_diffs_perenv.append("<h1>environment mapping missing completely for %s</h1>\n" % (a))
+        #try:
+		b = env_mapkeys.ENV_MAPKEYS[a]
+		sys.stderr.write("%s --> %s\n" % (a,b ))  
+		
+		a_files = file_contents_perenv[a]
+		b_files = file_contents_perenv[b]
+		
+		for af in a_files.keys():
+			try:
+				sub_env = re.sub("\.%s\." % a,".%s." % b, af)
+				sys.stderr.write("%s --> %s \n" % (af,sub_env))  
+				
+				left_contents = a_files[af]
+				right_contents = b_files[sub_env]
+				
+				#diff = difflib.unified_diff(left_contents, left_contents, fromfile=af, tofile=sub_env)
+				diff = difflib.HtmlDiff(wrapcolumn=80).make_table(left_contents,right_contents,fromdesc=af, todesc=sub_env,context=True)
+				
+				#file_diffs_perenv.append(diff)
+			except KeyError, e:
+				sys.stderr.write("environment mapping missing completely for %s --> %s\n" % (af,sub_env))
+				file_diffs_perenv.append("<h1>environment mapping missing completely for %s --> %s</h1>\n" % (af,sub_env))
+		
+		sys.stderr.write("%s \n" % (a_files.keys() )) 
+        #except KeyError, e:
+        #    sys.stderr.write("environment mapping missing completely for %s\n" % (a))
+        #    raise e
+        #    file_diffs_perenv.append("<h1>environment mapping missing completely for %s</h1>\n" % (a))
 
 
 def outputdiff_ashtml():
