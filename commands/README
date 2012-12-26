@@ -44,3 +44,4 @@ select s.* from calcode as d, calrule as r, crulescale as e, calscale as s, calr
     
 find . -size +5120k -exec ls -l {} \;
 
+find . -name "*.targetable.*2.properties" | awk -F ' ' '{print $1,$1}' | sed 's/2/3/2' | xargs -n 2 c
