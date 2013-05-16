@@ -9,6 +9,12 @@ if __name__ == '__main__':
     
     print stdin_logs
     
+    # Jan 17, 2013 1:30:02 PM
+    timeform = "%b %d, %Y %I:%M:%S %p"
+    
+    complete_start = None
+    complete_stop = None
+    
     for log in stdin_logs:
         
         log = re.sub("\n","",log)
@@ -19,13 +25,7 @@ if __name__ == '__main__':
         
         head_line = None
         detail_line = None
-        
-        # Jan 17, 2013 1:30:02 PM
-        timeform = "%b %d, %Y %I:%M:%S %p"
-        
-        complete_start = None
-        complete_stop = None
-        
+
         timestart = None
         timestop = None
         

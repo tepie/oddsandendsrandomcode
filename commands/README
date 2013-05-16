@@ -45,3 +45,26 @@ select s.* from calcode as d, calrule as r, crulescale as e, calscale as s, calr
 find . -size +5120k -exec ls -l {} \;
 
 find . -name "*.targetable.*2.properties" | awk -F ' ' '{print $1,$1}' | sed 's/2/3/2' | xargs -n 2 c
+
+sed -i 's/$/testing|/g'
+
+netstat -an | grep 50000
+
+insert into orcomment (ORCOMMENT_ID,orders_id,lastupdate,comments,ORDCHGRSN_ID) 
+select
+(select min(ORCOMMENT_ID) - 1 from orcomment) - O.orders_id ,O.orders_id,
+CURRENT_TIMESTAMP,
+'Order Canceled Email', -1000 
+from (select orders_id from orders where status = 'X' and orders_id not in (
+select orders_id from orcomment where ORDCHGRSN_ID = -1000)) AS O
+
+awk -F ',' '{if (NR!=1) {print $2}}' HTTP_Sales_Monitoring-Sheet1.csv > HTTP_Sales_Monitoring-Sheet1.URLS.txt
+har_sum=`echo "$url" | md5sum | awk -F ' ' '{print $1}'`
+
+svn log -v -r {2013-04-10}:{2013-04-17} .
+svn log -v -r {2013-05-01}:{2013-05-17} .
+svn log -v -r {2013-05-01}:{2013-05-17}
+svn log -r 5020 --diff file.xml
+
+db2 get dbm cfg |grep SVCENAME
+netstat -an |grep 50000 |grep LISTEN
