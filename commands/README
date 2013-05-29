@@ -17,6 +17,7 @@ split -a 3 -b 1073741824 largfile.7z largfile.7z.
 curl -b cookies -k -L "http://192.168.51.128/webapp/wcs/stores/Logon?storeId=10151&catalogId=10051&langId=-1&logonId=wcsadmin&logonPassword=passw0rd1&URL=SitemapGenerate%3FsitemapView%3DDefaultSitemapView%26uploadXMLToEAR%3Dtrue%26compareFiles%3Dfalse%26storeType%3DCPS%26storeId%3D10051&reLogonURL=FailureView"
 
 ps aux | grep "Remote Desktop" | grep -v 'grep' | awk -F ' ' '{print $2}' | xargs kill
+ps aux | grep "paster" | grep -v 'grep' | awk -F ' ' '{print $2}' | xargs kill
 
 db2 connect to cve user db2inst1 using db2@inst1
 db2 -f C:\file.sql -t
@@ -61,6 +62,12 @@ select orders_id from orcomment where ORDCHGRSN_ID = -1000)) AS O
 awk -F ',' '{if (NR!=1) {print $2}}' HTTP_Sales_Monitoring-Sheet1.csv > HTTP_Sales_Monitoring-Sheet1.URLS.txt
 har_sum=`echo "$url" | md5sum | awk -F ' ' '{print $1}'`
 
+ROWS_READ,ROWS_SKIPPED,ROWS_LOADED,ROWS_REJECTED,ROWS_DELETED,ROWS_COMMITTED,ROWS_PARTITIONED,NUM_AGENTINFO_ENTRIES,MSG_RETRIEVAL,MSG_REMOVAL
+grep -E "\[sql\] [0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+," 2013-05-23.log | sed 's/^.*\[sql\] //g' | awk -F ',' '{if (($3/$1)*100<20) {print "ROWS_LOADED" $3 "is less than 20% of the ROWS_READ" $1}}' 
+
+SITENAME=`echo "www.zara.com_2013-05-24 07:02:09.111658.xml.har" | awk -F '_' '{print $1}'`
+sed -i 's/page_1_0/${SITENAME}/g' "www.zara.com_2013-05-24 07:02:09.111658.xml.har"
+
 svn log -v -r {2013-04-10}:{2013-04-17} .
 svn log -v -r {2013-05-01}:{2013-05-17} .
 svn log -v -r {2013-05-01}:{2013-05-17}
@@ -68,3 +75,7 @@ svn log -r 5020 --diff file.xml
 
 db2 get dbm cfg |grep SVCENAME
 netstat -an |grep 50000 |grep LISTEN
+
+s3cmd ls s3://com.client/vmware/web_2013_04/
+s3cmd sync s3://com.client/vmware/web_2013_04/ .
+
