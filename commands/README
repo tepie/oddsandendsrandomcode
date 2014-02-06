@@ -16,7 +16,9 @@ split -a 3 -b 1073741824 largfile.7z largfile.7z.
 
 curl -b cookies -k -L "http://192.168.51.128/webapp/wcs/stores/Logon?storeId=10151&catalogId=10051&langId=-1&logonId=wcsadmin&logonPassword=passw0rd1&URL=SitemapGenerate%3FsitemapView%3DDefaultSitemapView%26uploadXMLToEAR%3Dtrue%26compareFiles%3Dfalse%26storeType%3DCPS%26storeId%3D10051&reLogonURL=FailureView"
 
+
 ps aux | grep "Remote Desktop" | grep -v 'grep' | awk -F ' ' '{print $2}' | xargs kill
+
 ps aux | grep "paster" | grep -v 'grep' | awk -F ' ' '{print $2}' | xargs kill
 
 db2 connect to cve user db2inst1 using db2@inst1
@@ -25,6 +27,8 @@ EXPORT TO "20120328_orders.del" OF DEL select * from orders where timeplaced bet
 
 db2 REORGCHK UPDATE STATISTICS on SCHEMA db2inst1
 db2advis -d cve -n db2inst1 -a db2inst1 -x -s "select LAT,LONG from db2inst1.x_geocodes where zip='34741'"
+
+
 
 diff -rupN -x .svn 2.02.3/ trunk/ 
 diff -rupN -x .svn 3.00_xp/ 3.01_xp/ 
@@ -45,7 +49,18 @@ select s.* from calcode as d, calrule as r, crulescale as e, calscale as s, calr
     
 find . -size +5120k -exec ls -l {} \;
 
+find . -group root -exec chgrp cvgroup {} \;
+find . -user root -exec chown cvuser {} \;
+
+db2 -tx "select orders_id,',',timeplaced from orders where timeplaced between CURRENT TIMESTAMP - 30 DAYS and CURRENT TIMESTAMP AND STATUS = 'F';" | sed 's/\(^[ ]*\)\([0-9].*$\)/000\2/g' | awk -F ' ' 'BEGIN { print "ORDERS.ORDERS_ID,MANIFEST.TRACKINGID,MANIFEST.DATESHIPPED,ORDERS.STATUS" } {print $1",1Z2243210308278086,"d",S"}' d="$(date +%m/%d/%Y)" > OrderStatusUpdate_`date "+%Y-%m-%d-%H_%M_%S"`.csv
+
 find . -name "*.targetable.*2.properties" | awk -F ' ' '{print $1,$1}' | sed 's/2/3/2' | xargs -n 2 c
+
+find ../media -name "*.png" | grep -v "\-low" | grep -v "\-med" | sed 's/\.png$//' | awk -F ' ' '{print "convert "$1".png -resize 50% "$1"-med.png"}' > exec_resize.sh
+
+grep '"/sites/default/Moosejaw/' SystemOut* |  awk -F '"' '{print $2}' | awk -F '/' '{print $5}' | sort  | uniq -c
+
+cat CustomerFeed.txt | awk '{print $1}' | sort | uniq -c | grep "2\ "
 
 sed -i 's/$/testing|/g'
 
@@ -73,9 +88,31 @@ svn log -v -r {2013-05-01}:{2013-05-17} .
 svn log -v -r {2013-05-01}:{2013-05-17}
 svn log -r 5020 --diff file.xml
 
+svn log -r 5535 --diff
+
 db2 get dbm cfg |grep SVCENAME
 netstat -an |grep 50000 |grep LISTEN
 
 s3cmd ls s3://com.client/vmware/web_2013_04/
 s3cmd sync s3://com.client/vmware/web_2013_04/ .
 
+svn log -v -r {2013-09-01}:{2013-09-25} https://svn.crossview.com/moosejaw/trunk/WCToolkitEE60-mj/workspace/WC/lib/crossview-paymentplugin-cybersource.jar
+
+awk -F '|' '{print $14"\|"$15"\|"$16"\|"$17"\|pb"}' Yesmail\ Send-Click-Open\ Date-PB\ through\ 9-10-2013.txt | sed 's/|\([0-9][0-9]\)\([0-9][0-9]\)\([0-9][0-9][0-9][0-9]\)|$/|\2-\1-\3|/g'
+
+grep "\<loc\>" sitemap.xml | sed 's/.*\<loc\>//g' | sed 's/\<\/loc\>.*//g' | wc -l
+
+grep "\<loc\>" sitemap.xml | sed 's/.*\<loc\>//g' | sed 's/\<\/loc\>.*//g' | wc -l
+
+ls | grep 7z | sort | awk  '{print "cat "$1" >> LC.7z"}' > combine.sh
+ls | grep 7z | sort | awk  '{print  "cat \""$0"\" >> LC.7z"}' > combine.sh
+
+sc stop "IBMHTTPServer7.0"
+timeout /T 10
+sc start "IBMHTTPServer7.0"
+
+./client -a 8101 -h localhost -u smx -p smx 
+osgi:bundle-level 186 70 
+
+wrapper.java.additional.9=-Dfile.encoding=UTF-8
+wrapper.java.additional.10=-Dsun.jnu.encoding=UTF-8
