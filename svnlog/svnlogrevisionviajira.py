@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 #svn log -v -r {2014-01-28}:{2014-02-06} . | python svnlogrevisionviajira.py
+#svn log -v -r {2014-03-16}:{2014-04-12} upgrade | python svnlogrevisionviajira.py | awk -F '> ' '{print $2}' | awk -F '.' '{print $1","}'
+#svn log -v -r 6147:HEAD | python /Users/station3/SOURCE/Personal/workspace_reference_personal/oddsandendsrandomcode_new/svnlog/svnlogrevisionviajira.py | awk -F '> ' '{print $2}' | awk -F '.' '{print $1","}'
 
 import sys, re, time
 
